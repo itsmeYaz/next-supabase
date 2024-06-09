@@ -7,6 +7,7 @@ import { columns } from './Members/Columns'
 import { useHelpers } from '@/hooks/useHelpers'
 import { supabaseAnonKey } from '@/lib/config'
 import { supabase } from '@/lib/supabase'
+import LoadingTeam from '../Loading/Team'
 
 function Index() {
   const [team, setTeam] = useState({
@@ -58,6 +59,8 @@ function Index() {
       subscription.unsubscribe()
     }
   }, [])
+
+  if (loading) return <LoadingTeam />
 
   return (
     <div className='grid gap-6 border rounded-lg shadow px-5 py-4 w-full max-w-[800px]'>
