@@ -1,31 +1,63 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DataTable from '@/components/DataTable'
 import NewMember from './NewMember'
 import { columns } from './Members/Columns'
+import { useHelpers } from '@/hooks/useHelpers'
+import { supabaseAnonKey } from '@/lib/config'
+import { supabase } from '@/lib/supabase'
 
 function Index() {
-  const [members, setMembers] = useState<any>([
-    {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      role: 'admin',
-      status: 'active',
-    },
-    {
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      role: 'member',
-      status: 'pending',
-    },
-    {
-      name: 'Bob Johnson',
-      email: 'bob.johnson@example.com',
-      role: 'admin',
-      status: 'removed',
-    },
-  ])
+  const [team, setTeam] = useState({
+    id: '2f99c7ac-25fc-4557-abbd-c47e26a70388',
+  })
+  const [members, setMembers] = useState<any>([])
+  const { loading, setLoading } = useHelpers()
+
+  const fetchTeam = async () => {
+    try {
+      setLoading(true)
+      const { data, error }: any = await supabase
+        .from('teams')
+        .select('*, team_members(*)')
+        .eq('id', '2f99c7ac-25fc-4557-abbd-c47e26a70388')
+        .single()
+
+      if (data) {
+        const { team_members, ...teamData } = data
+        setTeam(teamData)
+        setMembers(team_members)
+      }
+    } catch (error: any) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchTeam()
+    const subscription = supabase
+      .channel('channel_team_members')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'team_members',
+          filter: `team_id=eq.${team.id}`,
+        },
+        (payload: any) => {
+          fetchTeam()
+        },
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   return (
     <div className='grid gap-6 border rounded-lg shadow px-5 py-4 w-full max-w-[800px]'>
