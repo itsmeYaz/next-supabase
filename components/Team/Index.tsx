@@ -17,13 +17,13 @@ function Index() {
       name: 'Jane Smith',
       email: 'jane.smith@example.com',
       role: 'member',
-      status: 'active',
+      status: 'pending',
     },
     {
       name: 'Bob Johnson',
       email: 'bob.johnson@example.com',
       role: 'admin',
-      status: 'active',
+      status: 'removed',
     },
   ])
 
