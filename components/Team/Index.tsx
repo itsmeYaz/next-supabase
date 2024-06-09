@@ -16,7 +16,7 @@ function Index() {
     {
       name: 'Jane Smith',
       email: 'jane.smith@example.com',
-      role: 'user',
+      role: 'member',
       status: 'active',
     },
     {
