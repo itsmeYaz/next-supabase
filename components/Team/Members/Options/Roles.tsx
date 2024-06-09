@@ -16,11 +16,10 @@ export default function Roles({
   setSelected?: (value: string) => void
 }) {
   const roles = ['admin', 'manager', 'member']
-
   return (
     <Select defaultValue={selected} onValueChange={setSelected}>
       <SelectTrigger className='w-full capitalize'>
-        <SelectValue placeholder='Assign role' />
+        <SelectValue placeholder='Select a role' />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

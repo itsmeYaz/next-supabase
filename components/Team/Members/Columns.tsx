@@ -1,8 +1,10 @@
-import { useHelpers } from '@/hooks/useHelpers'
-import { ColumnDef } from '@tanstack/react-table'
-import Roles from './Options/Roles'
 import { Badge } from '@/components/ui/badge'
+import { useHelpers } from '@/hooks/useHelpers'
+import { supabase } from '@/lib/supabase'
+import { ColumnDef } from '@tanstack/react-table'
+import { toast } from 'sonner'
 import Options from './Options'
+import Roles from './Options/Roles'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -30,11 +32,22 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const { open, setOpen, loading, setLoading } = useHelpers()
       const role: string = row.getValue('role')
+      const id: string = row.original.id
 
-      const onRoleChanged = (v: string) => {
+      const onRoleChanged = async (v: string) => {
         try {
           setLoading(true)
-          alert(v)
+          const { data, error } = await supabase
+            .from('team_members')
+            .update({
+              role: v,
+            })
+            .eq('id', id)
+            .select('*')
+
+          if (data) {
+            toast.success('Role updated successfully')
+          }
         } catch (error: any) {
           throw new Error(error)
         } finally {
@@ -43,10 +56,15 @@ export const columns: ColumnDef<any>[] = [
         }
       }
 
+      //use this policy para admin lng makapagupdate ng role
+      /*  (EXISTS ( SELECT 1
+   FROM team_members t
+  WHERE ((t.email = auth.email()) AND (t.role = 'admin'::text) AND (t.team_id = t.team_id))))*/
+
       return (
         <div onClick={() => setOpen(!open)} className='w-[120px]'>
           {!open && (
-            <span className='text-sm text-neutral-500 capitalized'>{role}</span>
+            <span className='text-sm text-neutral-500 capitalize'>{role}</span>
           )}
           {open && (
             <Roles
@@ -84,7 +102,9 @@ export const columns: ColumnDef<any>[] = [
           )
         default:
           return (
-            <Badge className='capitalize bg-neutral-100 text-neutral-600'></Badge>
+            <Badge className='capitalize bg-neutral-100 text-neutral-600'>
+              Unknown
+            </Badge>
           )
       }
     },

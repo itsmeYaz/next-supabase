@@ -5,7 +5,6 @@ import DataTable from '@/components/DataTable'
 import NewMember from './NewMember'
 import { columns } from './Members/Columns'
 import { useHelpers } from '@/hooks/useHelpers'
-import { supabaseAnonKey } from '@/lib/config'
 import { supabase } from '@/lib/supabase'
 import LoadingTeam from '../Loading/Team'
 
