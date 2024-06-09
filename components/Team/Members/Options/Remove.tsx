@@ -1,3 +1,4 @@
+import CustomButton from '@/components/CustomButton'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -39,7 +40,11 @@ function Remove({ user, open, onClose }: any) {
           >
             Cancel
           </AlertDialogCancel>
-          {/* {<CustomButton {...{ label: 'Confirm', loading, onclick: removeMember }}/>} */}
+          {
+            <CustomButton
+              {...{ label: 'Confirm', loading, onClick: removeMember }}
+            />
+          }
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

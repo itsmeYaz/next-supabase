@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import DataTable from '@/components/DataTable'
-import New from './New'
+import NewMember from './NewMember'
 import { columns } from './Members/Columns'
 
 function Index() {
@@ -34,7 +34,7 @@ function Index() {
           <h1 className='text-2xl'>Team</h1>
           <p>Invite new members in your team.</p>
         </div>
-        <New />
+        <NewMember />
       </header>
       <main>
         <DataTable columns={columns} data={members} />
