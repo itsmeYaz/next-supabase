@@ -15,8 +15,10 @@ import { Label } from '@/components/ui/label'
 import Roles from './Members/Options/Roles'
 import { Input } from '../ui/input'
 import CustomButton from '../CustomButton'
+import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
 
-function NewMember() {
+function NewMember({ team_id }: { team_id: string }) {
   const { open, setOpen, loading, setLoading } = useHelpers()
   const [member, setMember] = useState({
     name: '',
@@ -24,19 +26,22 @@ function NewMember() {
     role: '',
   })
 
-  async function sendInvitation() {
+  async function saveMember() {
     try {
       setLoading(true)
+      const { data, error } = await supabase
+        .from('team_members')
+        .insert({ ...member, team_id })
+        .select()
+      if (data) {
+        toast.success('Team member succesfully added.')
+      }
     } catch (error: any) {
       console.log(error)
     } finally {
       setOpen(false)
       setLoading(false)
     }
-  }
-
-  function saveMember() {
-    return <p>member save</p>
   }
 
   return (

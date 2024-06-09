@@ -69,7 +69,7 @@ function Index() {
           <h1 className='text-2xl'>Team</h1>
           <p>Invite new members in your team.</p>
         </div>
-        <NewMember />
+        <NewMember team_id={team.id} />
       </header>
       <main>
         <DataTable columns={columns} data={members} />
