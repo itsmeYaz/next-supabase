@@ -9,17 +9,28 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { useHelpers } from '@/hooks/useHelpers'
+import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 function Remove({ user, open, onClose }: any) {
   const { loading, setLoading } = useHelpers()
 
-  const removeMember = () => {
+  const removeMember = async () => {
     try {
       setLoading(true)
-      toast.success('User successfully archived.')
-    } catch (error) {
-      console.log(error)
+      const { data, error } = await supabase
+        .from('team_members')
+        .update({
+          status: 'removed',
+        })
+        .eq('id', user.id)
+        .select('*')
+
+      if (data) {
+        toast.success('User remove.')
+      }
+    } catch (error: any) {
+      throw new Error(error)
     } finally {
       setLoading(false)
     }
